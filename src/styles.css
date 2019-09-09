@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+.ag-grid-cell {
+    height: 100%;
+    display: flex;
+}
+
+.ag-grid-cell p{
+    -webkit-align-self: center; /* Safari 7.0+ */
+    align-self: center;
+}
+
+.tool-bar {
+    display: inline-flex;
+    margin-bottom: 5px;
+}
+
+.tool-bar label {
+    margin: 4px 0px 4px 30px;
+}
+
+.tool-bar p {
+    margin: 4px 5px;
+}

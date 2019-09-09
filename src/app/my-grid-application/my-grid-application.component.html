@@ -1,0 +1,23 @@
+<div class="tool-bar">
+  <button id="btn-toggle" class="btn-toggle" (click)="toggleSelectionMode()">Toggle Selection Mode</button>
+  <label for="total-records">Total Records : </label>
+  <p id="total-records">{{ totalRecords }}</p>
+  <label for="selected-records">Selected Records : </label>
+  <p id="selected-records">{{ selectedRecordsCnt }}</p>
+</div>
+<ag-grid-angular
+  #agGrid
+  style="width: calc(100vw - 20px); height: calc(100vh - 50px);"
+  class="ag-theme-balham"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [rowData]="rowData"
+  [suppressRowClickSelection]="true"
+  [rowSelection]="rowSelection"
+  [getRowHeight]="getRowHeight"
+  [frameworkComponents]="frameworkComponents"
+  [sideBar]="sideBar"
+  (gridReady)="onGridReady($event)"
+  (selectionChanged)="onSelectionChanged()"
+>
+</ag-grid-angular>
