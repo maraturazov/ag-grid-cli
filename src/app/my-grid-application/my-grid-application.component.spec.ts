@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { DebugElement } from '@angular/core';
+import { DebugElement, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule, By } from '@angular/platform-browser';
@@ -10,6 +10,9 @@ import { ThumbnailsRendererComponent } from '../components/thumbnails-renderer/t
 import { VideotitleRendererComponent } from '../components/videotitle-renderer/videotitle-renderer.component';
 import { AgGridService } from '../shared/services/ag-grid.service';
 import { MyGridApplicationComponent } from './my-grid-application.component';
+import { ToolPanelComponent } from '../components/tool-panel/tool-panel.component';
+import { IToolPanelParams } from 'ag-grid-community';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('MyGridApplicationComponent', () => {
   let component: MyGridApplicationComponent;
@@ -17,6 +20,7 @@ describe('MyGridApplicationComponent', () => {
   let agGridService: AgGridService;
   let debugElement: DebugElement;
   let fetchListsSpy;
+  let childComponent: ToolPanelComponent;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -28,7 +32,8 @@ describe('MyGridApplicationComponent', () => {
           ThumbnailsRendererComponent,
           VideotitleRendererComponent,
           PublishedOnRendererComponent,
-          DescriptionRendererComponent
+          DescriptionRendererComponent,
+          ToolPanelComponent
         ])
       ],
       declarations: [
@@ -36,8 +41,17 @@ describe('MyGridApplicationComponent', () => {
         ThumbnailsRendererComponent,
         VideotitleRendererComponent,
         PublishedOnRendererComponent,
-        DescriptionRendererComponent],
-      providers: [AgGridService]
+        DescriptionRendererComponent,
+        ToolPanelComponent
+      ],
+      schemas: [ NO_ERRORS_SCHEMA ],
+      providers: [
+        AgGridService,
+        {
+          provide: ToolPanelComponent,
+          useClass: MyGridApplicationComponent,
+        }
+      ]
     })
     .compileComponents();
 
@@ -45,6 +59,7 @@ describe('MyGridApplicationComponent', () => {
     debugElement = fixture.debugElement;
     component = fixture.componentInstance;
     agGridService = debugElement.injector.get(AgGridService);
+    component.toolPanelComponent = childComponent;
     fetchListsSpy = spyOn(agGridService, 'fetchLists').and.callThrough();
     fixture.detectChanges();
   }));
@@ -56,21 +71,24 @@ describe('MyGridApplicationComponent', () => {
   it('should fetch lists', () => {
     expect(fetchListsSpy).toHaveBeenCalled();
     expect(component.rowData).toBeTruthy();
-    fixture.detectChanges();
   });
 
   it(`should toggle selection mode once 'Toggle Selection Mode' button is clicked`, () => {
-    const prevToggleStatus = component.checkboxVisibility;
-    debugElement.query(By.css('#btn-toggle')).nativeElement.click();
     fixture.detectChanges();
-    expect(component.checkboxVisibility).toBe(!prevToggleStatus);
+    spyOn(component, 'toggleSelectionMode').and.callThrough();
+    childComponent = debugElement.query(By.css('app-tool-panel')).componentInstance;
+    childComponent.toggleSelectionMode();
+    fixture.detectChanges();
+    console.log(777, childComponent);
+    expect(component.toggleSelectionMode).toHaveBeenCalled();
   });
 
   it('should show total records', () => {
+    component.gridApi.dispatchEvent({type: 'modelUpdated'});
     fixture.detectChanges();
-    const totalRecordsInHTML = debugElement.query(By.css('#total-records')).nativeElement.innerText;
+    // const totalRecordsInHTML = debugElement.query(By.css('#total-records')).nativeElement.innerText;
     const totalRecords = component.rowData.length;
-    expect(totalRecordsInHTML).toBe(`${totalRecords}`);
+    expect(childComponent.totalRecords).toBe(totalRecords);
   });
 
   it('should show selected records', () => {

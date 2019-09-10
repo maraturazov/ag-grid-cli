@@ -1,3 +1,13 @@
-<div>
-  <button (click)="toggleSelectionMode()">Toggle Selection Mode</button>
+<div class="tool-panel">
+  <div class="tool-bar">
+    <button #btnToggle id="btn-toggle" class="btn-toggle" (click)="toggleSelectionMode()"><p>Toggle Selection Mode</p></button>
+    <div>
+      <label for="total-records">Total Records : </label>
+      <p id="total-records">{{ totalRecords }}</p>
+    </div>
+    <div>
+      <label for="selected-records">Selected Records : </label>
+      <p id="selected-records">{{ selectedRecords }}</p>
+    </div>
+  </div>
 </div>

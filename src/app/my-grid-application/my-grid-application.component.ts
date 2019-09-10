@@ -6,69 +6,37 @@ import { ThumbnailsRendererComponent } from '../components/thumbnails-renderer/t
 import { ToolPanelComponent } from '../components/tool-panel/tool-panel.component';
 import { VideotitleRendererComponent } from '../components/videotitle-renderer/videotitle-renderer.component';
 import { AgGridService } from '../shared/services/ag-grid.service';
-
+import "ag-grid-enterprise";
+import { columnDefs } from '../shared/constants/ag-grid-option';
+import { GridApi, ColumnApi, IToolPanel } from 'ag-grid-community';
 @Component({
   selector: 'app-my-grid-application',
   templateUrl: './my-grid-application.component.html',
-  styleUrls: ['./my-grid-application.component.css']
+  styleUrls: ['./my-grid-application.component.css'],
 })
 export class MyGridApplicationComponent implements OnInit {
   // ag-grid options
   columnDefs;
   rowData;
-  gridApi;
-  gridColumnApi;
+  gridApi: GridApi;
+  gridColumnApi: ColumnApi;
   rowSelection;
   defaultColDef;
   frameworkComponents;
   getRowHeight;
   sideBar;
-
+  toolPanelComponent: ToolPanelComponent;
   // toolbar options
-  totalRecords = 0;
-  selectedRecordsCnt = 0;
   checkboxVisibility = false;
   @ViewChild('agGrid') agGrid: AgGridAngular;
-
+  @ViewChild(ToolPanelComponent) set toolPanel(toolPanelComponent: ToolPanelComponent) {
+    this.toolPanelComponent = toolPanelComponent;
+  }
   constructor(private agGridService: AgGridService) { }
 
   ngOnInit() {
     // column options
-    this.columnDefs = [
-      {
-        headerName: '',
-        field: 'checkbox',
-        headerCheckboxSelection: true,
-        headerCheckboxSelectionFilteredOnly: true,
-        checkboxSelection: true,
-        width: 38,
-        resizable: false
-      },
-      {
-        headerName: '',
-        field: 'thumbnails',
-        cellRenderer: 'thumbnailsRenderer',
-        width: 144
-      },
-      {
-        headerName: 'Published on',
-        field: 'publishedAt',
-        cellRenderer: 'publishedOnRenderer',
-        width: 200
-      },
-      {
-        headerName: 'Video Title',
-        field: 'title',
-        cellRenderer: 'videoTitleRenderer',
-        width: 620
-      },
-      {
-        headerName: 'Description',
-        field: 'description',
-        cellRenderer: 'descriptionRenderer',
-        width: 900
-      }
-    ];
+    this.columnDefs = columnDefs;
     this.defaultColDef = {
       resizable: true
     };
@@ -93,11 +61,13 @@ export class MyGridApplicationComponent implements OnInit {
       toolPanels: [
         {
           id: 'toolbar',
-          labelDefault: 'Tool Bar',
+          labelDefault: 'ToolBar',
           labelKey: 'toolbar',
+          iconKey: 'columns',
           toolPanel: 'toolPanel'
         }
-      ]
+      ],
+      defaultToolPanel: 'toolbar'
     };
     this.fetchLists();
   }
@@ -105,6 +75,7 @@ export class MyGridApplicationComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+    this.gridApi.addEventListener('toggleSelectionMode', this.toggleSelectionMode.bind(this));
     this.gridColumnApi.setColumnVisible('checkbox', false);
   }
 
@@ -121,16 +92,12 @@ export class MyGridApplicationComponent implements OnInit {
           videoId: item.id.videoId
         };
       });
-      this.totalRecords = this.rowData.length;
     });
   }
 
   toggleSelectionMode() {
     this.checkboxVisibility = !this.checkboxVisibility;
     this.gridColumnApi.setColumnVisible('checkbox', this.checkboxVisibility);
-  }
-
-  onSelectionChanged() {
-    this.selectedRecordsCnt = this.gridApi.getSelectedRows().length;
+    console.log(this.toolPanelComponent);
   }
 }

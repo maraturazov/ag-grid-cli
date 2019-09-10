@@ -1,0 +1,35 @@
+.tool-panel {
+    height: 100%;
+    display: flex;
+}
+
+.tool-bar {
+    display: block;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.tool-bar button {
+    padding: 3px 5px;
+}
+
+p, label {
+    font-size: 16px !important;
+    font-weight: 600;
+}
+
+.tool-bar > div {
+    margin-top: 20px;
+    display: inline-flex;
+}
+
+.tool-bar label {
+    margin: 4px 0px 4px;
+}
+
+.tool-bar p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    margin: 4px 5px;
+}

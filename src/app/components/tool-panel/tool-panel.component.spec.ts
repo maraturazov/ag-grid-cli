@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AgGridModule } from 'ag-grid-angular';
 import { ToolPanelComponent } from './tool-panel.component';
+import { FormsModule } from '@angular/forms';
 
 describe('ToolPanelComponent', () => {
   let component: ToolPanelComponent;
@@ -9,6 +10,7 @@ describe('ToolPanelComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        FormsModule,
         AgGridModule.withComponents([ToolPanelComponent])
       ],
       declarations: [ ToolPanelComponent ],

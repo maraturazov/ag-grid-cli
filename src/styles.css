@@ -8,16 +8,3 @@
     -webkit-align-self: center; /* Safari 7.0+ */
     align-self: center;
 }
-
-.tool-bar {
-    display: inline-flex;
-    margin-bottom: 5px;
-}
-
-.tool-bar label {
-    margin: 4px 0px 4px 30px;
-}
-
-.tool-bar p {
-    margin: 4px 5px;
-}
